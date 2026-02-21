@@ -1,5 +1,5 @@
 # 🎙️ Icecast Streaming Server amb Docker
-
+![Icecast Web Interface](screenshots/icecast-status.png)
 Servidor de ràdio per Internet desplegat amb **Icecast i Docker Compose**, amb suport per múltiples formats (MP3 i Opus), playlist rotativa, metadades i programació horària.
 
 ---
@@ -61,6 +61,10 @@ docker compose ps
 ---
 
 ## Accés al servidor
+
+### Exemple de reproducció en VLC
+
+![VLC Streaming](screenshots/vlc-stream.png)
 
 ### Interfície web Icecast
 
@@ -147,6 +151,9 @@ El contenidor accedeix al Docker socket per controlar els serveis.
 cat logs/access.log
 cat logs/error.log
 ```
+### Monitorització en temps real
+
+![Icecast Stats](screenshots/icecast-stats.png)
 
 ### Logs en temps real
 
