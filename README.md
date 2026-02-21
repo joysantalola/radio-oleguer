@@ -42,7 +42,7 @@ radio-olegueresteo/
 ### 1️⃣ Clonar el repositori
 
 ```bash
-git clone https://github.com/USERNAME/radio-icecast-docker.git
+git clone https://github.com/joysantalola/radio-icecast-docker.git
 cd radio-icecast-docker
 ```
 
