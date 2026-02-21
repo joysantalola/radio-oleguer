@@ -60,7 +60,7 @@ docker compose ps
 
 ---
 
-## 🌐 Accés al servidor
+## Accés al servidor
 
 ### Interfície web Icecast
 
@@ -109,7 +109,7 @@ file '/audio/canco2.mp3'
 
 ---
 
-## 📡 Metadades (Títol de cançó)
+## Metadades (Títol de cançó)
 
 El servei `metadata.sh` envia el nom de la cançó actual a Icecast utilitzant l’endpoint:
 
