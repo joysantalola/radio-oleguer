@@ -1,0 +1,3 @@
+0 8 * * * /schedule.sh start_main >> /var/log/cron.log 2>&1
+0 14 * * * /schedule.sh start_alt >> /var/log/cron.log 2>&1
+0 22 * * * /schedule.sh stop_all >> /var/log/cron.log 2>&1

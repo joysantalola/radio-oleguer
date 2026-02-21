@@ -1,0 +1,98 @@
+services:
+
+  icecast-olegueresteo:
+    image: moul/icecast:latest
+    container_name: icecast-olegueresteo
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config/icecast.xml:/etc/icecast2/icecast.xml:ro
+      - ./logs:/var/log/icecast
+    restart: unless-stopped
+    networks:
+      - radio-network
+
+
+  # PLAYLIST ROTATIVA
+  streamer-olegueresteo:
+    image: jrottenberg/ffmpeg:6.0-ubuntu
+    container_name: streamer-olegueresteo
+    entrypoint: ffmpeg
+    volumes:
+      - ./audio:/audio:ro
+    command: >
+      -re -stream_loop -1
+      -f concat -safe 0 -i /audio/playlist.txt
+      -codec:a libmp3lame -b:a 128k
+      -f mp3
+      icecast://source:radio123@icecast-olegueresteo:8000/radio-olegueresteo.mp3
+    depends_on:
+      - icecast-olegueresteo
+    restart: unless-stopped
+    networks:
+      - radio-network
+  
+  streamer-olegueresteo-hq:
+    image: jrottenberg/ffmpeg:6.0-ubuntu
+    container_name: streamer-olegueresteo-hq
+    entrypoint: ffmpeg
+    volumes:
+      - ./audio:/audio:ro
+    command: >
+      -re -stream_loop -1
+      -f concat -safe 0 -i /audio/playlist.txt
+      -codec:a libmp3lame -b:a 320k
+      -f mp3
+      icecast://source:radio123@icecast-olegueresteo:8000/radio-olegueresteo-hq.mp3
+    depends_on:
+      - icecast-olegueresteo
+    restart: unless-stopped
+    networks:
+      - radio-network
+
+  streamer-olegueresteo-opus:
+    image: jrottenberg/ffmpeg:6.0-ubuntu
+    container_name: streamer-olegueresteo-opus
+    entrypoint: ffmpeg
+    volumes:
+      - ./audio:/audio:ro
+    command: >
+      -re -stream_loop -1
+      -i /audio/canco1.mp3
+      -codec:a libopus -b:a 96k
+      -f ogg
+      icecast://source:radio123@icecast-olegueresteo:8000/radio-olegueresteo.opus
+    depends_on:
+      - icecast-olegueresteo
+    restart: unless-stopped
+    networks:
+      - radio-network
+  
+  metadata-olegueresteo:
+    image: alpine:3.20
+    container_name: metadata-olegueresteo
+    depends_on:
+      - icecast-olegueresteo
+    volumes:
+      - ./config/metadata.sh:/metadata.sh:ro
+      - ./audio:/audio:ro
+    command: >
+      sh -c "apk add --no-cache curl ffmpeg && /metadata.sh"
+    restart: unless-stopped
+    networks:
+      - radio-network
+
+  scheduler-olegueresteo:
+    image: alpine:3.20
+    container_name: scheduler-olegueresteo
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config/schedule.sh:/schedule.sh
+      - ./config/crontab:/etc/crontabs/root
+    command: >
+      sh -c "apk add --no-cache docker-cli && crond -f -l 2"
+    restart: unless-stopped
+
+networks:
+  radio-network:
+    driver: bridge
